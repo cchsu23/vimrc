@@ -1,3 +1,14 @@
+" Check if exist Vundle plugin.
+let iCanHazVundle=1
+let vundle_readme=expand('~/.vim/bundle/Vundle.vim/README.md')
+if !filereadable(vundle_readme)
+	echo "Installing Vundle.."
+	echo ""
+	silent !mkdir -p ~/.vim/bundle
+	silent !git clone https://github.com/gmarik/vundle ~/.vim/bundle/Vundle.vim
+	let iCanHazVundle=0
+endif
+
 set nocompatible              " be iMproved, required
 filetype off                  " required
 
