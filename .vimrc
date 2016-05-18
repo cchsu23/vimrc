@@ -74,7 +74,7 @@ filetype plugin indent on
 syntax enable
 set background=dark
 let g:solarized_termcolors=256
-colorscheme solarized
+"colorscheme solarized
 
 
 "----------------
@@ -214,7 +214,7 @@ if has("cscope")
     endif
     set csverb
 endif
-nmap <F7> :!find . -iname '*.c' -o -iname '*.cpp' -o -iname '*.h' -o -iname '*.hpp' -o -iname '*.mk' > cscope.files<CR>
+nmap <F7> :!find . -iname '*.c' -o -iname '*.cpp' -o -iname '*.h' -o -iname '*.hpp' -o -iname '*.mk' -o -iname '*.java' > cscope.files<CR>
   \:!cscope -Rbq -i cscope.files -f cscope.out<CR>
   \:!ctags -R --exclude=.svn --exclude=.git --exclude=.repo<CR>
   
