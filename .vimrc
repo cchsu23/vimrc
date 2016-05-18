@@ -5,7 +5,7 @@ if !filereadable(vundle_readme)
 	echo "Installing Vundle.."
 	echo ""
 	silent !mkdir -p ~/.vim/bundle
-	silent !git clone https://github.com/gmarik/vundle ~/.vim/bundle/Vundle.vim
+	silent !git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
 	let iCanHazVundle=0
 endif
 
@@ -19,7 +19,7 @@ call vundle#begin()
 " call vundle#begin('~/some/path/here')
 
 " let Vundle manage Vundle, required
-Plugin 'gmarik/Vundle.vim'
+Plugin 'VundleVim/Vundle.vim'
 
 " The following are examples of different formats supported.
 " Keep Plugin commands between vundle#begin/end.
@@ -39,13 +39,14 @@ Plugin 'gmarik/Vundle.vim'
 Plugin 'scrooloose/nerdtree'
 Plugin 'scrooloose/nerdcommenter'
 Plugin 'vim-scripts/taglist.vim'
-Bundle 'altercation/vim-colors-solarized'
+Plugin 'altercation/vim-colors-solarized'
 " Plugin 'bling/vim-airline'
 Plugin 'vim-scripts/winmanager'
 Plugin 'vim-scripts/a.vim'
 Plugin 'kien/ctrlp.vim'
 Plugin 'vim-scripts/OmniCppComplete'
 Plugin 'moll/vim-bbye'
+
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
@@ -171,7 +172,7 @@ let NERDTreeShowFiles=1
 " 是否默認顯示行號
 " let NERDTreeShowLineNumbers=1
 " 窗口位置（'left' or 'right'）
-" let NERDTreeWinPos='left'
+let NERDTreeWinPos='right'
 " 窗口寬
 let NERDTreeWinSize=31
 
@@ -186,9 +187,9 @@ let Tlist_Auto_Update=1			 " Automatically update the taglist to include newly e
 " 把taglist窗口放在視窗的右側，預設在左側
 " let Tlist_Use_Right_Window=1 
 " 顯示taglist選單
-" let Tlist_Show_Menu=1
+let Tlist_Show_Menu=1
 " 啟動vim自動打開taglist
-" let Tlist_Auto_Open=1
+let Tlist_Auto_Open=1
 " ctags, 指定tags文件的位置,讓vim自動在當前或者上層文件夾中尋找tags文件
 set tags=tags
 " 添加系統調用路徑
@@ -213,15 +214,37 @@ if has("cscope")
     endif
     set csverb
 endif
-" map <F4>:!cscope -Rbq<CR>:cs add ./cscope.out .<CR><CR><CR> :cs reset<CR>
+nmap <F7> :!find . -iname '*.c' -o -iname '*.cpp' -o -iname '*.h' -o -iname '*.hpp' -o -iname '*.mk' > cscope.files<CR>
+  \:!cscope -Rbq -i cscope.files -f cscope.out<CR>
+  \:!ctags -R --exclude=.svn --exclude=.git --exclude=.repo<CR>
+  
+"map <F4>:!cscope -Rbq<CR>:cs add ./cscope.out .<CR><CR><CR> :cs reset<CR>
  "對:cs find c等Cscope查找命令進行映射
-nmap <leader>s :cs find s <C-R>=expand("<cword>")<CR><CR> :copen<CR><CR>
-nmap <leader>g :cs find g <C-R>=expand("<cword>")<CR><CR>
-nmap <leader>d :cs find d <C-R>=expand("<cword>")<CR><CR> :copen<CR><CR>
-nmap <leader>c :cs find c <C-R>=expand("<cword>")<CR><CR>:copen<CR><CR>
-nmap <leader>t :cs find t <C-R>=expand("<cword>")<CR><CR>:copen<CR><CR>
-nmap <leader>e :cs find e <C-R>=expand("<cword>")<CR><CR>:copen<CR><CR>
-nmap <leader>f :cs find f <C-R>=expand("<cfile>")<CR><CR>
-nmap <leader>i :cs find i <C-R>=expand("<cfile>")<CR><CR> :copen<CR><CR>
+    " The following maps all invoke one of the following cscope search types:
+    "
+    "   's'   symbol: find all references to the token under cursor
+    "   'g'   global: find global definition(s) of the token under cursor
+    "   'c'   calls:  find all calls to the function name under cursor
+    "   't'   text:   find all instances of the text under cursor
+    "   'e'   egrep:  egrep search for the word under cursor
+    "   'f'   file:   open the filename under cursor
+    "   'i'   includes: find files that include the filename under cursor
+    "   'd'   called: find functions that function under cursor calls
+    
+	" To do the first type of search, hit 'CTRL-\', followed by one of the
+    " cscope search types above (s,g,c,t,e,f,i,d).  The result of your cscope
+    " search will be displayed in the current window.  You can use CTRL-T to
+    " go back to where you were before the search.  
+	
+    nmap <C-\>s :cs find s <C-R>=expand("<cword>")<CR><CR> :copen<CR><CR>
+    nmap <C-\>g :cs find g <C-R>=expand("<cword>")<CR><CR>	
+    nmap <C-\>c :cs find c <C-R>=expand("<cword>")<CR><CR> :copen<CR><CR>
+    nmap <C-\>t :cs find t <C-R>=expand("<cword>")<CR><CR> :copen<CR><CR>
+    nmap <C-\>e :cs find e <C-R>=expand("<cword>")<CR><CR> :copen<CR><CR>
+    nmap <C-\>f :cs find f <C-R>=expand("<cfile>")<CR><CR>	
+    nmap <C-\>i :cs find i ^<C-R>=expand("<cfile>")<CR>$<CR>:copen<CR><CR>
+    nmap <C-\>d :cs find d <C-R>=expand("<cword>")<CR><CR>	 :copen<CR><CR>
+	
+	
 " 設定是否使用 quickfix 窗口來顯示 cscope 結果
 set cscopequickfix=s-,c-,d-,i-,t-,e-
